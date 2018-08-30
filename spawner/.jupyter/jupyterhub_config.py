@@ -3,6 +3,10 @@ import os
 import json
 import requests
 
+# Setup location for customised template files.
+
+c.JupyterHub.template_paths = ['/opt/app-root/src/templates']
+
 c.JupyterHub.logo_file = '/opt/app-root/src/images/OpenShiftBanner.png'
 
 # Override image details with that for the terminal. We need to use a
@@ -96,6 +100,11 @@ c.Authenticator.auto_login = True
 c.JupyterHub.admin_access = True
 
 c.Authenticator.admin_users = set(os.environ.get('ADMIN_USERS', '').split())
+
+# Disable redirection to terminal instance, send them back to home page.
+
+c.JupyterHub.redirect_to_server = False
+c.JupyterHub.default_url = '/hub/home'
 
 # Override URL prefix for application and copy files to volume.
 

@@ -1,20 +1,110 @@
 {% extends "templates/home.html" %}
 
+{% block meta %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css">
+  <style>
+  html, body {
+    height: 97%;
+  }
+  body {
+    padding: 8px;
+    background-color: #F6F6F6;
+    box-sizing: border-box;
+  }
+  .split {
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .content {
+    border: 1px solid #C0C0C0;
+    box-shadow: inset 0 1px 2px #e4e4e4;
+    background-color: #fff;
+  }
+  .gutter {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: 50%;
+  }
+  .gutter.gutter-horizontal {
+    cursor: col-resize;
+    background-image: url('https://github.com/nathancahill/Split.js/raw/master/grips/vertical.png');
+  }
+  .gutter.gutter-vertical {
+    cursor: row-resize;
+    background-image: url('https://github.com/nathancahill/Split.js/raw/master/grips/horizontal.png');
+  }
+  .split.split-horizontal, .gutter.gutter-horizontal {
+    height: 100%;
+    float: left
+  }
+
+  .navbar-default {
+    position: fixed;
+    width: 100%;
+  }
+
+  .page-content-banner {
+    margin-top: 50px;
+  }
+  </style>
+{% endblock %}
+
 {% block main %}
+<script type="text/javascript">
+document.body.style.overflow = 'hidden';
+function adjust_left_iframe_size() {
+  var navbar = document.getElementsByClassName("navbar navbar-default");
+  var left_iframe = document.getElementById("left-iframe");
+  var left_div = document.getElementById("a");
+  var right_iframe = document.getElementById("right-iframe");
+  var right_div = document.getElementById("b");
 
-        <div class="panel-container">
+  console.log(left_div);
+  left_iframe.style.width = left_div.offsetWidth + "px";
+  right_iframe.style.width = right_div.offsetWidth + "px";
 
-            <div class="content">
-    <iframe src="/workshop/python-starter-workshop/lab/common-environment" frameborder="5" scrolling="yes" height="512" align="left" width="45%"></iframe>
-            </div>
+  left_iframe.style.height = left_iframe.contentWindow.document.body.scrollHeight-navbar[0].offsetHeight + "px";
+  right_iframe.style.height = left_iframe.contentWindow.document.body.scrollHeight-navbar[0].offsetHeight + "px";
 
-            <div>
-            </div>
+  left_iframe.style.height = $(window).height() - 65 + "px";
+  right_iframe.style.height = $(window).height() - 65 + "px";
+}
+</script>
 
-            <div class="terminal">
-    <iframe src="/hub/spawn" frameborder="5" scrolling="yes" height="512" align="right" width="45%"></iframe>
-            </div>
+    <div class="page-content-banner"></div>
 
-        </div>
+    <div id="a" class="split split-horizontal">
+      <div class="split content">
+<iframe src="/workshop/python-starter-workshop/lab/common-environment" id="left-iframe" scrolling="yes" width="100%" height="50%" onload="adjust_left_iframe_size()" onchange="adjust_left_iframe_size()"></iframe>
+      </div>
+    </div>
+    <div id="b" class="split split-horizontal">
+      <div class="split content">
+<iframe src="/hub/spawn" scrolling="yes" width="100%" height="100%" id="right-iframe" onload="adjust_left_iframe_size()"></iframe>
+      </div>
+    </div>
+
+    <script>
+require.config({
+  paths: {
+    "split": "https://unpkg.com/split.js/split.min"
+  }
+});
+    </script>
+<script>
+require(['split'], function(split) {
+    split(['#a', '#b'], {
+      gutterSize: 8,
+      sizes: [40, 60],
+      cursor: 'col-resize',
+      onDrag: function () {
+        adjust_left_iframe_size();
+    }
+    })
+});
+</script>
 
 {% endblock %}
